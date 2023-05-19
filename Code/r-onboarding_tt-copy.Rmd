@@ -88,9 +88,9 @@ PathPlotsCSV<- here(dataPath,'plots.csv')
 PathSpeciesCSV<- here(dataPath,'species.csv')
 PathSurveysCSV<- here(dataPath,'surveys.csv') 
 #did not do this properly but ok gonna do it right now
-SpeciesObj <- read.csv(PathSpeciesCSV)
-SurveysObj <- read.csv(PathSurveysCSV)
-PlotsObj <- read.csv(PathPlotsCSV)
+SpeciesObj <- read.csv(PathSpeciesCSV,na.strings = c("",NA)) #converts blank to NA
+SurveysObj <- read.csv(PathSurveysCSV,na.strings = c("",NA))
+PlotsObj <- read.csv(PathPlotsCSV,na.strings = c("",NA))
 
 #could have also used their data extraction code
 ```
@@ -110,13 +110,18 @@ SurveysObj$species <- str_replace_na(SurveysObj$species)
 #not sure if I could just graph with $ or if I should make a new df icould use %>%
 #standardized?
 #count col?
+
+
+SurveysNoSex <- SurveysObj %>% 
+  select(censusdate,month, day,year,treatment,species, sex) %>%
+  filter((sex == NA_character_))
 ```
 
 
 # Explore data
 ```{r}
 #total species observations?
-s
+
 ```
 
 5) Make some test plots. Try plotting what you have cleaned. You may find there are outliers to remove or the data is not sufficient to answer the question. eg, all cats were between 3 and 5 years so you could not see what kind of food really young or really old cats ate, or some cats are registered as traveling at 200kmph and there was probably just something wrong with its tag so you should remove the row. Maybe you need to format the data a little differently. From here make any adjustments and then...
