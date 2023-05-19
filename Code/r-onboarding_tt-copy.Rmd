@@ -1,0 +1,133 @@
+---
+title: "r-onboarding-tt"
+output: html_document
+date: "2023-04-20"
+---
+
+Now that you have at least skimmed the onboarding document, lets try some things.
+
+Your first assignment is to complete a [Tidy Tuesday](https://github.com/rfordatascience/tidytuesday). 
+The concept behind Tidy Tuesday is that each week a dataset is posted and the community will make data visualizations from that dataset. There are a wide range of topics and it doesn't matter how simple or advanced the visualization is. The goal is just to broaden your skills. Many people post their results and code as well for the whole community to benefit.
+
+Here are the rules:
+1) Scroll to the bottom of the github main page and pick a dataset. I don't care which dataset you pick; the latest, the week of your birthday, one about a topic you like. It doesn't matter, there are ~6 years of datasets, don't think too hard about it. If you really can't pick use a [random generator](https://www.random.org/calendar-dates/) set between April 02 and today.
+#
+
+# note if lubridate is loaded it must be here::here() filepath <- here::here('folder3', 'folder2', 'folder3')
+2) Access the data either by: clicking into the files and hitting 'download' then saving them to a repository, or by 'forking' the repository. 'Forking' makes a repository in your github that is a copy of the repository. You can also use the package.
+
+3) Read the dataset description and data dictionary. Think about what variables could be compared to ask a question. For your first one, think about basic bar plots, scatter plots, histograms, etc. Don't worry about models or complicated analyses. Just think about two variables such as, age of cat vs type of food: Are older cats fed more wet food? Lets make a histogram! hours indoors vs sex of cat: do males or females spend more time inside? lets make a boxplot! Hours indoors vs prey per month: Are cats that go outside more actually better hunters? Lets make a scatterplot with a trend line! Lat/long vs ground speed vs sex: where are the fastest cats and are they male or female? Lets make a map with dots colored by speed and shaped by sex!
+```{r setup, include=FALSE}
+#COPIE D LIST OF USEFUL PACKAGES
+install.packages("devtools")
+# data handling
+## I primarily use tidyverse, but there are a few other helpful ones.
+install.packages('tidyverse')
+install.packages('stringr') # helpful functions to modify strings 
+install.packages('skimr') # overview of data install.packages('janitor') # a few REALLY helpful functions install.packages('lubridate') # fixes and standardizes dates install.packages('here') # standard filepath
+# plotting
+## I pretty much exclusively use ggplot
+## if the output isn't native to ggplot we'll make it into an object that can be read by g install.packages('ggplot2')
+install.packages("ggpubr") # adds useful things to ggplot, see: ggarrange, annotate_figure install.packages("ggtext") # more text options
+install.packages("ggnewscale") # reset color scale in the middle of a plot install.packages("ggrepel") # move points away from each other install.packages("ggConvexHull") # make a shape around points
+install.packages("ggtree") # lots of options for dendrograms
+install.packages("gt") # makes great tables, not ggplot though install.packages("showtext") # lets you use more fonts; not always reproducible!
+# analysis
+# I don't know yet exactly which packages you'll need but here's some helpful ones install.packages("vegan") # ecology
+install.packages("ape") # phylogeny
+install.packages("iNEXT") # species accumulation curves install.packages("taxize") # taxonomy
+install.packages("worrms") # world register of marine species, marine taxonomy install.packages("recluster") # basic cluster analysis install.packages("arsenal") # compare two lists/dataframes install.packages('eulerr') # proportional venn diagrams
+install.packages("sf") # spatial analysis / maps
+
+install.packages("tidyverse")
+install.packages("ggplot2")
+install.packages("here")
+install.packages("stats")
+install.packages("graphics")
+install.packages("grDevices")
+install.packages("utils")
+install.packages("datasets")
+install.packages("methods")
+library(stats)
+library(graphics)
+library(grDevices)
+library(utils)
+library(datasets)
+library(methods)
+
+library(tidyverse)
+library(ggplot2)
+library(here)
+library(skimr)
+library(sf)
+library(worrms)
+library(iNEXT)
+library(ape)
+library(gt)
+library(ggtree)##error install
+library(ggnewscale)
+library(ggpubr)#error
+library(stringr)
+install.packages("usethis")
+library(usethis)
+library(devtools)#error?
+library(tidyverse)
+sessionInfo()
+
+```
+
+
+# Load in your data
+
+```{r load in}
+# Here some filepaths
+tidytuesdayPath <- here()
+dataPath<- here(tidytuesdayPath,'data/2023/2023-05-02')
+
+PathPlotsCSV<- here(dataPath,'plots.csv')
+PathSpeciesCSV<- here(dataPath,'species.csv')
+PathSurveysCSV<- here(dataPath,'surveys.csv') 
+#did not do this properly but ok gonna do it right now
+SpeciesObj <- read.csv(PathSpeciesCSV)
+SurveysObj <- read.csv(PathSurveysCSV)
+PlotsObj <- read.csv(PathPlotsCSV)
+
+#could have also used their data extraction code
+```
+
+4) Using the data dictionary, identify what columns in the dataset you need to make your plot. Select them, clean them, filter them, and/or make them. eg: fix typos, remove whitespace (STRING?), standardize classifications, add a count column, etc. You may need to combine two provided csvs or something else. Many Tidy Tuesdays can be almost nothing but this step with a default plot at the end.
+
+# Clean data
+
+```{r}
+skim(SpeciesObj) #nice //NA species name Error
+skim(SurveysObj) #nice
+skim(PlotsObj) #nice
+SpeciesObj$species <- str_replace_na(SpeciesObj$species)
+SurveysObj$species <- str_replace_na(SurveysObj$species)
+
+#glimpse(SpeciesObj)
+#not sure if I could just graph with $ or if I should make a new df icould use %>%
+#standardized?
+#count col?
+```
+
+
+# Explore data
+```{r}
+#total species observations?
+s
+```
+
+5) Make some test plots. Try plotting what you have cleaned. You may find there are outliers to remove or the data is not sufficient to answer the question. eg, all cats were between 3 and 5 years so you could not see what kind of food really young or really old cats ate, or some cats are registered as traveling at 200kmph and there was probably just something wrong with its tag so you should remove the row. Maybe you need to format the data a little differently. From here make any adjustments and then...
+
+6) Make a 'final plot'! Start simple and see what you can do. Even if all the settings are default if you made it this far it's a success.
+
+
+# Final plot
+```{r}
+
+```
+7) Push final markdown and plot in a shared repository so I can proofread and test the code. I should be able to recreate the plot by hitting play on the chunks. I will provide written feedback as well alongside the code in a few days.
+
+8) Do it again next week and we'll see what you have learned.
