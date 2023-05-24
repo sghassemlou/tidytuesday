@@ -48,6 +48,9 @@ install.packages("grDevices")
 install.packages("utils")
 install.packages("datasets")
 install.packages("methods")
+install.packages("hrbrthemes")
+install.packages("viridis")
+install.packages("viridisLite")
 library(stats)
 library(graphics)
 library(grDevices)
@@ -88,9 +91,7 @@ PathPlotsCSV<- here(dataPath,'plots.csv')
 PathSpeciesCSV<- here(dataPath,'species.csv')
 PathSurveysCSV<- here(dataPath,'surveys.csv') 
 #did not do this properly but ok gonna do it right now
-SpeciesObj <- read.csv(PathSpeciesCSV,na.strings = c("",NA)) #converts blank to NA
-SurveysObj <- read.csv(PathSurveysCSV,na.strings = c("",NA))
-PlotsObj <- read.csv(PathPlotsCSV,na.strings = c("",NA))
+
 
 #could have also used their data extraction code
 ```
@@ -100,6 +101,11 @@ PlotsObj <- read.csv(PathPlotsCSV,na.strings = c("",NA))
 # Clean data
 
 ```{r}
+
+SpeciesObj <- read.csv(PathSpeciesCSV,na.strings = c("",NA)) #converts blank to NA
+SurveysObj <- read.csv(PathSurveysCSV,na.strings = c("",NA))
+PlotsObj <- read.csv(PathPlotsCSV,na.strings = c("",NA))
+
 skim(SpeciesObj) #nice //NA species name Error
 skim(SurveysObj) #nice
 skim(PlotsObj) #nice
@@ -113,15 +119,22 @@ SurveysObj$species <- str_replace_na(SurveysObj$species)
 
 
 SurveysNoSex <- SurveysObj %>% 
-  select(censusdate,month, day,year,treatment,species, sex) %>%
-  filter((sex == NA_character_))
+  select(censusdate,month, day,year,treatment,species, sex,wgt) %>%
+  filter(!is.na(sex) & (!is.na(wgt)))
 ```
 
 
 # Explore data
 ```{r}
 #total species observations?
+# Libraries
+library(ggplot2)
+library(dplyr)
+library(forcats)
+library(hrbrthemes)
+library(viridis)
 
+SpeciesObj$genus <- SpeciesObj
 ```
 
 5) Make some test plots. Try plotting what you have cleaned. You may find there are outliers to remove or the data is not sufficient to answer the question. eg, all cats were between 3 and 5 years so you could not see what kind of food really young or really old cats ate, or some cats are registered as traveling at 200kmph and there was probably just something wrong with its tag so you should remove the row. Maybe you need to format the data a little differently. From here make any adjustments and then...
@@ -131,6 +144,18 @@ SurveysNoSex <- SurveysObj %>%
 
 # Final plot
 ```{r}
+
+#violin plot for 4 species between male and female
+SurveysNoSex %>%
+  mutate(species = fct_reorder(species, wgt)) %>%
+  mutate(species = factor(species, levels=c("NA", "PH", "PF", "SF"))) %>%
+  ggplot(aes(fill=sex, y=wgt, x=species)) + 
+    geom_violin(position="dodge", alpha=0.5, outlier.colour="transparent") +
+    scale_fill_viridis(discrete=T, name="") +
+    theme_ipsum()  +
+    xlab("Species Initials") +
+    ylab("inidividual wieght") +
+    ylim(0,300)
 
 ```
 7) Push final markdown and plot in a shared repository so I can proofread and test the code. I should be able to recreate the plot by hitting play on the chunks. I will provide written feedback as well alongside the code in a few days.
