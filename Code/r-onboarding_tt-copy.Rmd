@@ -147,8 +147,9 @@ SpeciesObj$genus <- SpeciesObj
 
 #violin plot for 4 species between male and female
 SurveysNoSex %>%
+  filter(species %in% c("NA", "PH", "PF", "SF")) %>%
   mutate(species = fct_reorder(species, wgt)) %>%
-  mutate(species = factor(species, levels=c("NA", "PH", "PF", "SF"))) %>%
+  #mutate(species = factor(species, levels=c("NA", "PH", "PF", "SF"))) %>%
   ggplot(aes(fill=sex, y=wgt, x=species)) + 
     geom_violin(position="dodge", alpha=0.5, outlier.colour="transparent") +
     scale_fill_viridis(discrete=T, name="") +
@@ -157,6 +158,9 @@ SurveysNoSex %>%
     ylab("inidividual wieght") +
     ylim(0,300)
 
+
+
+unique(SurveysNoSex$species)
 ```
 7) Push final markdown and plot in a shared repository so I can proofread and test the code. I should be able to recreate the plot by hitting play on the chunks. I will provide written feedback as well alongside the code in a few days.
 
